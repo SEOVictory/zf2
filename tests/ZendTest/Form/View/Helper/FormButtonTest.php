@@ -13,6 +13,7 @@ use Zend\Form\Element;
 use Zend\Form\Form;
 use Zend\Form\View\Helper\FormButton as FormButtonHelper;
 
+
 class FormButtonTest extends CommonTestCase
 {
     public function setUp()
@@ -279,8 +280,27 @@ class FormButtonTest extends CommonTestCase
         $this->assertContains('>translated content<', $markup);
     }
 
+
+    public function testCanTranslateButtonContent()
+    {
+
+        $element = new Element('foo');
+
+        $mockTranslator = $this->getMock('Zend\I18n\Translator\Translator');
+        $mockTranslator->expects($this->exactly(1))
+            ->method('translate')
+            ->will($this->returnValue('translated content'));
+
+        $this->helper->setTranslator($mockTranslator);
+        $this->assertTrue($this->helper->hasTranslator());
+
+        $markup = $this->helper->__invoke($element, "translate me");
+        $this->assertContains('>translated content<', $markup);
+    }
+
     public function testTranslatorMethods()
     {
+
         $translatorMock = $this->getMock('Zend\I18n\Translator\Translator');
         $this->helper->setTranslator($translatorMock, 'foo');
 
